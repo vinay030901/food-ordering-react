@@ -27,8 +27,8 @@ export default function Home() {
           Order From Our Handpicked Favourites
         </h1>
         <div className="flex flex-wrap items-center justify-around gap-5">
-          {restaurant.map((item) => (
-            <RestaurantCard key={1} item={item} />
+          {restaurant.map((item, index) => (
+            <RestaurantCard key={index} item={item} />
           ))}
         </div>
       </section>

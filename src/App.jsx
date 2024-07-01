@@ -3,14 +3,20 @@ import { darkTheme } from "./components/Theme/DarkTheme"; // Adjust the import p
 import { CssBaseline } from "@mui/material";
 
 import Navbar from "./components/Navbar/Navbar";
-import Home from "./components/Home/Home";
+import Cart from "./components/Cart/Cart";
+import Profile from "./components/Profile/Profile";
+import CustomerRoute from "./Routers/CustomerRoute";
 
 function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Navbar />
-      <Home />
+      {/* <Navbar /> */}
+      {/* <Home /> */}
+      {/* <RestaurantDetails /> */}
+      {/* <Cart /> */}
+      {/* <Profile /> */}
+      <CustomerRoute />
     </ThemeProvider>
   );
 }
