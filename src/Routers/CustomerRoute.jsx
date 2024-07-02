@@ -11,7 +11,7 @@ export default function CustomerRoute() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/account/:aregister" element={<Home />} />
+        <Route path="/account/:register" element={<Home />} />
         <Route
           path="/restaurant/:city/:title/:id"
           element={<RestaurantDetails />}

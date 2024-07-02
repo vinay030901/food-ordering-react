@@ -1,6 +1,8 @@
-import { Button, TextField, Typography } from "@mui/material";
-import { Field, Formik } from "formik";
-import { Form, useNavigate } from "react-router-dom";
+import { Button, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Field, Form, Formik } from "formik";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { registerUser } from "../State/Authentication/Action";
 
 const initialValues = {
   fullName: "",
@@ -10,7 +12,10 @@ const initialValues = {
 };
 export default function RegisterForm() {
   const navigate = useNavigate();
-  const handleSubmit = () => {};
+  const dispatch = useDispatch();
+  const handleSubmit = (values) => {
+    dispatch(registerUser({ userData: values, navigate }));
+  };
   return (
     <div>
       <Typography variant="h5" className="text-center">
@@ -24,6 +29,7 @@ export default function RegisterForm() {
             label="fullName"
             fullWidth
             variant="outlined"
+            margin="normal"
           />
           <Field
             as={TextField}
@@ -31,6 +37,7 @@ export default function RegisterForm() {
             label="email"
             fullWidth
             variant="outlined"
+            margin="normal"
           />
           <Field
             as={TextField}
@@ -39,20 +46,37 @@ export default function RegisterForm() {
             fullWidth
             variant="outlined"
             margin="normal"
+            type="password"
           />
+          <Field
+            fullWidth
+            margin="normal"
+            as={Select}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            label="Role"
+            name="role"
+          >
+            <MenuItem value={"ROLE_CUSTOMER"}>Customer</MenuItem>
+            <MenuItem value={"ROLE_RESTAURANT_OWNER"}>
+              Restaurant Owner
+            </MenuItem>
+          </Field>
           <Button
             sx={{ mt: 2, padding: "1rem" }}
             fullWidth
             type="submit"
             variant="contained"
           >
-            Login
+            Register
           </Button>
         </Form>
       </Formik>
       <Typography variant="body2" align="center" sx={{ mt: 3 }}>
         {`Already have an account?`}
-        <Button onClick={() => navigate("/account/login")}>login</Button>
+        <Button size="small" onClick={() => navigate("/account/login")}>
+          login
+        </Button>
       </Typography>
     </div>
   );

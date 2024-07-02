@@ -15,12 +15,12 @@ export default function Auth() {
       <Modal
         onClose={handleOnClose}
         open={
-          location.pathname === "/acccount/register" ||
+          location.pathname === "/account/register" ||
           location.pathname === "/account/login"
         }
       >
         <Box sx={style}>
-          {location.pathname === "/acccount/register" ? (
+          {location.pathname === "/account/register" ? (
             <RegisterForm />
           ) : (
             <LoginForm />
