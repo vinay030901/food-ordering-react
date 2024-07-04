@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../Config/api";
+import { api, API_URL } from "../../Config/api";
 import {
   ADD_TO_FAVORITE_FAILURE,
   ADD_TO_FAVORITE_REQUEST,
@@ -61,13 +61,14 @@ export const loginUser = (reqData) => async (dispatch) => {
 export const getUser = (jwt) => async (dispatch) => {
   dispatch({ type: GET_USER_REQUEST });
   try {
-    const { data } = await axios.get(`/api/users/profile`, {
+    const { data } = await api.get(`/api/users/profile`, {
       headers: {
         Authorization: `Bearer ${jwt}`,
       },
     });
-    dispatch({ type: GET_USER_SUCCESS, payload: data });
     console.log("user profile: ", data);
+    dispatch({ type: GET_USER_SUCCESS, payload: data });
+
   } catch (error) {
     dispatch({ type: GET_USER_FAILURE, payload: error });
     console.log("error: " + error);

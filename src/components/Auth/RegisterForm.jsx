@@ -14,6 +14,9 @@ export default function RegisterForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleSubmit = (values) => {
+    console.log("====================================");
+    console.log(values);
+    console.log("====================================");
     dispatch(registerUser({ userData: values, navigate }));
   };
   return (

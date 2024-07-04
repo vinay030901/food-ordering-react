@@ -13,6 +13,7 @@ function App() {
   const { auth } = useSelector((store) => store);
   useEffect(() => {
     dispatch(getUser(auth.jwt || jwt));
+    console.log("hello: ", auth.user);
   }, [auth.jwt]);
   return (
     <ThemeProvider theme={darkTheme}>
