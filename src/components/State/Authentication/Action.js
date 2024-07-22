@@ -25,7 +25,7 @@ export const registerUser = (reqData) => async (dispatch) => {
     );
     if (data.jwt) localStorage.setItem("jwt", data.jwt);
     if (data.role === "ROLE_RESTAURANT_OWNER") {
-      reqData.navigate("/admin/restaurant");
+      reqData.navigate("/admin/restaurants");
     } else {
       reqData.navigate("/");
     }
@@ -46,7 +46,7 @@ export const loginUser = (reqData) => async (dispatch) => {
     );
     if (data.jwt) localStorage.setItem("jwt", data.jwt);
     if (data.role === "ROLE_RESTAURANT_OWNER") {
-      reqData.navigate("/admin/restaurant");
+      reqData.navigate("/admin/restaurants");
     } else {
       reqData.navigate("/");
     }
@@ -68,32 +68,33 @@ export const getUser = (jwt) => async (dispatch) => {
     });
     console.log("user profile: ", data);
     dispatch({ type: GET_USER_SUCCESS, payload: data });
-
   } catch (error) {
     dispatch({ type: GET_USER_FAILURE, payload: error });
     console.log("error: " + error);
   }
 };
 
-export const addToFavorite = (jwt, restaurantId) => async (dispatch) => {
-  dispatch({ type: ADD_TO_FAVORITE_REQUEST });
-  try {
-    const { data } = await axios.put(
-      `/api/restaurants/${restaurantId}/add-favorite`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      }
-    );
-    dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: data });
-    console.log("added to favorite: ", data);
-  } catch (error) {
-    dispatch({ type: ADD_TO_FAVORITE_FAILURE, payload: error });
-    console.log("error: " + error);
-  }
-};
+export const addToFavorite =
+  ({ jwt, restaurantId }) =>
+  async (dispatch) => {
+    dispatch({ type: ADD_TO_FAVORITE_REQUEST });
+    try {
+      const { data } = await api.put(
+        `/api/restaurants/${restaurantId}/add-favorites`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      dispatch({ type: ADD_TO_FAVORITE_SUCCESS, payload: data });
+      console.log("added to favorite: ", data);
+    } catch (error) {
+      dispatch({ type: ADD_TO_FAVORITE_FAILURE, payload: error });
+      console.log("error: " + error);
+    }
+  };
 
 export const logout = () => async (dispatch) => {
   try {

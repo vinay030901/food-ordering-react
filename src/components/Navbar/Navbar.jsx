@@ -8,16 +8,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export default function Navbar() {
-  const { auth } = useSelector((store) => store);
+  const { auth, cart } = useSelector((store) => store);
   const navigate = useNavigate();
   const handleAvatarClick = () => {
     if (auth.user?.role === "ROLE_CUSTOMER") navigate("/my-profile");
-    else navigate("/admin/restaurant");
+    else navigate("/admin/restaurants");
   };
-
-  console.log("====================================");
-  console.log(auth, "auth");
-  console.log("====================================");
 
   return (
     <div className="px-5 sticky top-0 z-50 py-[.8rem] bg-[#e91e63] lg:px-20 flex justify-between ">
@@ -40,6 +36,7 @@ export default function Navbar() {
             <Avatar
               onClick={handleAvatarClick}
               sx={{ bgcolor: "white", color: pink.A400 }}
+              className="cursor-pointer"
             >
               {auth.user?.fullName?.[0].toUpperCase()}
             </Avatar>
@@ -50,8 +47,8 @@ export default function Navbar() {
           )}
         </div>
         <div className="">
-          <IconButton>
-            <Badge color="primary" badgeContent={3}>
+          <IconButton onClick={() => navigate("/cart")}>
+            <Badge color="primary" badgeContent={cart.cart?.items.length}>
               <ShoppingCartIcon sx={{ fontSize: "1.5rem" }}></ShoppingCartIcon>
             </Badge>
           </IconButton>

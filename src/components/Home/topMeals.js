@@ -36,8 +36,8 @@ export const topMeals = [
   },
   {
     image:
-      "hhttps://cdn.pixabay.com/photo/2022/03/02/12/42/paneer-7043099_1280.jpg",
-    title: "Panner Butter Masala",
+      "https://cdn.pixabay.com/photo/2022/03/02/12/42/paneer-7043099_1280.jpg",
+    title: "Paneer Butter Masala",
   },
   {
     image:

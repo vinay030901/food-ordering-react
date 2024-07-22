@@ -2,8 +2,27 @@ import { Card, Chip, IconButton } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-export default function RestaurantCard() {
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { addToFavorite } from "../State/Authentication/Action";
+import { isPresentInFavorites } from "../Config/logic";
+import { useNavigate } from "react-router-dom";
+
+export default function RestaurantCard({ item }) {
   let shouldExecute = true;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { auth } = useSelector((store) => store);
+  const handleAddToFavorite = () => {
+    dispatch(addToFavorite({ restaurantId: item.id, jwt }));
+  };
+
+  const handleNavigateToRestaurant = () => {
+    if (item.open) {
+      navigate(`/restaurant/${item.address.city}/${item.name}/${item.id}`);
+    }
+  };
   return (
     <Card className="w-[18rem]">
       <div
@@ -13,25 +32,32 @@ export default function RestaurantCard() {
       >
         <img
           className="w-full h-[10rem] rounded-t-md object-cover"
-          src="http://res.cloudinary.com/dcpesbd8q/image/upload/v1707802815/ux3xq93xzfbqhtudigv2.jpg"
+          src={item.images[0]}
           alt=""
         />
         <Chip
           size="small"
           className="absolute top-2 left-2"
-          color={shouldExecute ? "success" : "error"}
-          label={shouldExecute ? "open" : "closed"}
+          color={item.open ? "success" : "error"}
+          label={item.open ? "open" : "closed"}
         />
       </div>
       <div className="p-4 textPart lg:flex w-full justify-between">
         <div className="space-y-1">
-          <p className="font-semibold text-lg">Indian fast food</p>
-          <p className="text-gray-500 text-sm">
-            Craving it all? Dive into our global pool...
+          <p
+            onClick={handleNavigateToRestaurant}
+            className="font-semibold text-lg cursor-pointer"
+          >
+            {item.name}
           </p>
+          <p className="text-gray-500 text-sm">{item.description}</p>
           <div>
-            <IconButton>
-              {shouldExecute ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            <IconButton onClick={handleAddToFavorite}>
+              {isPresentInFavorites(auth.favorites, item) ? (
+                <FavoriteIcon />
+              ) : (
+                <FavoriteBorderIcon />
+              )}
             </IconButton>
           </div>
         </div>
@@ -39,3 +65,13 @@ export default function RestaurantCard() {
     </Card>
   );
 }
+RestaurantCard.propTypes = {
+  item: PropTypes.shape({
+    images: PropTypes.array.isRequired,
+    open: PropTypes.bool.isRequired,
+    name: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
+    address: PropTypes.object.isRequired,
+  }).isRequired,
+};

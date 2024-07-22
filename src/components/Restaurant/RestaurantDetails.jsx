@@ -9,10 +9,16 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MenuCard from "./MenuCard";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRestaurantById,
+  getRestaurantsCategory,
+} from "../State/Restaurant/Action";
+import { getMenuItemsByRestaurantId } from "../State/Menu/Action";
 
-const categories = ["pizza", "biryani", "burger", "chicken", "rice"];
 const foodTypes = [
   { label: "All", value: "all" },
   { label: "Vegetarian Only", value: "vegetarian" },
@@ -22,30 +28,64 @@ const foodTypes = [
 
 const menu = [1, 1, 1, 1, 1, 1];
 export default function RestaurantDetails() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const { auth, restaurant, menu } = useSelector((store) => store);
+
   const [foodType, setFoodType] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const { id, city } = useParams();
+  console.log("restaurant: ", restaurant);
 
   const handleFilter = (e) => {
+    setFoodType(e.target.value);
     console.log(e.target.value, e.target.name);
   };
+
+  const handleFilterCategory = (e, value) => {
+    setSelectedCategory(value);
+    console.log(value);
+    console.log(e.target.value, e.target.name, value);
+  };
+
+  useEffect(() => {
+    dispatch(getRestaurantById({ jwt, restaurantId: id }));
+    dispatch(getRestaurantsCategory({ jwt, restaurantId: id }));
+  }, [dispatch, id, jwt]);
+
+  useEffect(() => {
+    dispatch(
+      getMenuItemsByRestaurantId({
+        jwt,
+        restaurantId: id,
+        vegetarian: foodType === "vegetarian",
+        nonveg: foodType === "non_vegetarian",
+        seasonal: foodType === "seasonal",
+        food_category: selectedCategory,
+      })
+    );
+  }, [dispatch, foodType, id, jwt, selectedCategory]);
   return (
     <div className="px-5 lg:px-20">
       <section>
         <h3 className="text-gray-500 py-2 mt-10">
-          Home/India/indian fast food
+          {restaurant.restaurants.name}
         </h3>
         <div>
           <Grid container spacing={2}>
             <Grid item xs={12} lg={12}>
               <img
                 className="w-full h-[40vh] object-cover"
-                src="https://cdn.pixabay.com/photo/2016/11/21/16/02/outdoor-dining-1846137_1280.jpg"
+                src={restaurant.restaurant?.images[0]}
                 alt=""
               />
             </Grid>
             <Grid item xs={12} lg={6}>
               <img
                 className="w-full h-[40vh] object-cover"
-                src="https://cdn.pixabay.com/photo/2017/07/31/11/22/man-2557408_1280.jpg"
+                src={restaurant.restaurant?.images[1]}
                 alt=""
               />
             </Grid>
@@ -59,13 +99,11 @@ export default function RestaurantDetails() {
           </Grid>
         </div>
         <div className="pt-3 pb-5">
-          <h1 className="text-4xl font-semibold">Indian fast food</h1>
+          <h1 className="text-4xl font-semibold">
+            {restaurant.restaurants.name}
+          </h1>
           <p className="text-gray-500 mt-1">
-            Nestled in the heart of downtown, The Azure Plate offers a culinary
-            journey with its blend of modern and traditional dishes. This cozy
-            eatery prides itself on using locally-sourced ingredients, ensuring
-            each meal is both fresh and flavorful. Perfect for food enthusiasts
-            seeking a memorable dining experience.
+            {restaurant.restaurants.description}
           </p>
           <div className="space-y-3 mt-3">
             <p className="text-gray-500 flex items-center gap-3">
@@ -89,7 +127,7 @@ export default function RestaurantDetails() {
               </Typography>
               <FormControl className="py-10 space-y-5" component={"fieldset"}>
                 <RadioGroup
-                  name="food_type"
+                  name="food_category"
                   value={foodType}
                   onChange={handleFilter}
                 >
@@ -113,15 +151,15 @@ export default function RestaurantDetails() {
                 <FormControl className="py-10 space-y-5" component={"fieldset"}>
                   <RadioGroup
                     name="food_category"
-                    value={categories}
-                    onChange={handleFilter}
+                    value={selectedCategory}
+                    onChange={handleFilterCategory}
                   >
-                    {categories.map((item) => (
+                    {restaurant.categories.map((item) => (
                       <FormControlLabel
-                        key={item}
-                        value={item}
+                        key={item.name}
+                        value={item.name}
                         control={<Radio />}
-                        label={item}
+                        label={item.name}
                       />
                     ))}
                   </RadioGroup>
@@ -131,7 +169,7 @@ export default function RestaurantDetails() {
           </div>
         </div>
         <div className="space-y-5 lg:w-[80%] lg:pl-10">
-          {menu.map((item, index) => (
+          {menu.menuItems.map((item, index) => (
             <MenuCard item={item} key={index} />
           ))}
         </div>

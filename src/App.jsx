@@ -6,6 +6,9 @@ import CustomerRoute from "./Routers/CustomerRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getUser } from "./components/State/Authentication/Action";
+import { findCart } from "./components/State/Cart/Action";
+import Routers from "./Routers/Routers";
+import { getRestaurantByUserId } from "./components/State/Restaurant/Action";
 
 function App() {
   const dispatch = useDispatch();
@@ -13,12 +16,16 @@ function App() {
   const { auth } = useSelector((store) => store);
   useEffect(() => {
     dispatch(getUser(auth.jwt || jwt));
-    console.log("hello: ", auth.user);
-  }, [auth.jwt]);
+    dispatch(findCart(jwt));
+  }, [auth.jwt, dispatch, jwt]);
+
+  useEffect(() => {
+    dispatch(getRestaurantByUserId(auth.jwt || jwt));
+  }, [auth.jwt, dispatch, jwt]);
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <CustomerRoute />
+      <Routers />
     </ThemeProvider>
   );
 }
