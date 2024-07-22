@@ -19,11 +19,12 @@ export const restaurantOrderReducer = (state = initialState, action) => {
       return { ...state, error: null, loading: true };
     case GET_RESTAURANT_ORDER_SUCCESS:
       return { ...state, orders: action.payload, loading: false, error: null };
-    case UPDATE_ORDER_STATUS_SUCCESS:
+    case UPDATE_ORDER_STATUS_SUCCESS: {
       const updatedOrders = state.orders.map((order) =>
-        order.id === payload.id ? payload : order
+        order.id === action.payload.id ? action.payload : order
       );
       return { ...state, loading: false, orders: updatedOrders };
+    }
     case GET_RESTAURANT_ORDER_FAILURE:
     case UPDATE_ORDER_STATUS_FAILURE:
       return { ...state, loading: false, error: action.error };
